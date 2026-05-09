@@ -2346,6 +2346,18 @@ export default function Layout(props: ParentProps) {
       onOpenSettings={openSettings}
       helpLabel={() => language.t("sidebar.help")}
       onOpenHelp={() => platform.openLink("https://opencode.ai/desktop-feedback")}
+      logoutLabel={() => "Đăng xuất"}
+      onLogout={async () => {
+        try {
+          await fetch("/api/v2/auth/sign-out", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: "{}",
+          })
+        } catch {}
+        location.replace("/opencode-ui/login.html")
+      }}
       renderPanel={() =>
         mobile ? <SidebarPanel project={currentProject} mobile /> : <SidebarPanel project={currentProject} merged />
       }

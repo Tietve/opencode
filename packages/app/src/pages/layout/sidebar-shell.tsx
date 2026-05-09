@@ -30,6 +30,11 @@ export const SidebarContent = (props: {
   onOpenSettings: () => void
   helpLabel: Accessor<string>
   onOpenHelp: () => void
+  // Firlaw: optional logout entry rendered next to settings/help on the
+  // sidebar rail. Falls back gracefully when not provided (upstream desktop
+  // app has no auth so the host doesn't pass these props).
+  logoutLabel?: Accessor<string>
+  onLogout?: () => void
   renderPanel: () => JSX.Element
 }): JSX.Element => {
   const expanded = createMemo(() => !!props.mobile || props.opened())
@@ -108,6 +113,17 @@ export const SidebarContent = (props: {
               aria-label={props.helpLabel()}
             />
           </Tooltip>
+          <Show when={props.onLogout && props.logoutLabel}>
+            <Tooltip placement={placement()} value={props.logoutLabel!()}>
+              <IconButton
+                icon="logout"
+                variant="ghost"
+                size="large"
+                onClick={props.onLogout}
+                aria-label={props.logoutLabel!()}
+              />
+            </Tooltip>
+          </Show>
         </div>
       </div>
 
