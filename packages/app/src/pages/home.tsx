@@ -1,4 +1,4 @@
-import { createMemo, For, Match, Switch } from "solid-js"
+import { createMemo, For, Match, onMount, Switch } from "solid-js"
 import { Button } from "@opencode-ai/ui/button"
 import { Logo } from "@opencode-ai/ui/logo"
 import { useLayout } from "@/context/layout"
@@ -42,6 +42,25 @@ export default function Home() {
     server.projects.touch(directory)
     navigate(`/${base64Encode(directory)}`)
   }
+
+  // Firlaw: each user has a forced directory under /home/node/firlaw/accounts/<userId>/.opencode-data.
+  // The backend rewrites every /opencode/path call so the response.directory is the per-user
+  // workspace. Auto-open it on Home mount so the sidebar shows session history without the user
+  // having to click "Ouvrir un projet" every visit. Idempotent — layout.projects.open dedupes
+  // on worktree match.
+  onMount(async () => {
+    try {
+      const r = await fetch("/opencode/path", { credentials: "include" })
+      if (!r.ok) return
+      const data = (await r.json()) as { directory?: string } | null
+      const dir = data?.directory
+      if (typeof dir === "string" && dir.startsWith("/")) {
+        openProject(dir)
+      }
+    } catch {
+      // Silent — Home still renders and user can click "Ouvrir un projet" manually.
+    }
+  })
 
   async function chooseProject() {
     function resolve(result: string | string[] | null) {

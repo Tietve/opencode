@@ -20,6 +20,9 @@ const sentry =
     : false
 
 export default defineConfig({
+  // Firlaw deploys this build under /opencode-ui/ on the backend, so all
+  // asset URLs must be prefixed accordingly.
+  base: "/opencode-ui/",
   plugins: [desktopPlugin, sentry] as any,
   server: {
     host: "0.0.0.0",
