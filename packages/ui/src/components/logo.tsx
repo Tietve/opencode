@@ -1,16 +1,33 @@
 import { ComponentProps } from "solid-js"
 
+// Firlaw brand: stylized F mark + burgundy/gold accents.
+// Original colors: dark #1F2937, burgundy #722F37, gold #C9A961, cream #F5F1E8.
+// We use `var(--icon-strong-base)` for the structural strokes so the mark
+// stays legible across light/dark themes; brand accents stay hardcoded.
+
+const FMark = () => (
+  <g>
+    <rect x="60" y="40" width="16" height="120" fill="var(--icon-strong-base)" />
+    <rect x="48" y="40" width="40" height="8" fill="var(--icon-strong-base)" />
+    <rect x="48" y="152" width="40" height="8" fill="var(--icon-strong-base)" />
+    <rect x="76" y="40" width="68" height="18" fill="#722F37" />
+    <rect x="144" y="40" width="6" height="26" fill="#722F37" />
+    <rect x="76" y="90" width="52" height="16" fill="#722F37" />
+    <rect x="128" y="90" width="5" height="22" fill="#722F37" />
+    <circle cx="160" cy="51" r="5" fill="#C9A961" />
+  </g>
+)
+
 export const Mark = (props: { class?: string }) => {
   return (
     <svg
       data-component="logo-mark"
       classList={{ [props.class ?? ""]: !!props.class }}
-      viewBox="0 0 16 20"
+      viewBox="0 0 200 200"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path data-slot="logo-logo-mark-shadow" d="M12 16H4V8H12V16Z" fill="var(--icon-weak-base)" />
-      <path data-slot="logo-logo-mark-o" d="M12 4H4V16H12V4ZM16 20H0V0H16V20Z" fill="var(--icon-strong-base)" />
+      <FMark />
     </svg>
   )
 }
@@ -21,12 +38,11 @@ export const Splash = (props: Pick<ComponentProps<"svg">, "ref" | "class">) => {
       ref={props.ref}
       data-component="logo-splash"
       classList={{ [props.class ?? ""]: !!props.class }}
-      viewBox="0 0 80 100"
+      viewBox="0 0 200 200"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path d="M60 80H20V40H60V80Z" fill="var(--icon-base)" />
-      <path d="M60 20H20V80H60V20ZM80 100H0V0H80V100Z" fill="var(--icon-strong-base)" />
+      <FMark />
     </svg>
   )
 }
@@ -35,28 +51,23 @@ export const Logo = (props: { class?: string }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 234 42"
+      viewBox="0 0 720 200"
       fill="none"
       classList={{ [props.class ?? ""]: !!props.class }}
     >
-      <g>
-        <path d="M18 30H6V18H18V30Z" fill="var(--icon-weak-base)" />
-        <path d="M18 12H6V30H18V12ZM24 36H0V6H24V36Z" fill="var(--icon-base)" />
-        <path d="M48 30H36V18H48V30Z" fill="var(--icon-weak-base)" />
-        <path d="M36 30H48V12H36V30ZM54 36H36V42H30V6H54V36Z" fill="var(--icon-base)" />
-        <path d="M84 24V30H66V24H84Z" fill="var(--icon-weak-base)" />
-        <path d="M84 24H66V30H84V36H60V6H84V24ZM66 18H78V12H66V18Z" fill="var(--icon-base)" />
-        <path d="M108 36H96V18H108V36Z" fill="var(--icon-weak-base)" />
-        <path d="M108 12H96V36H90V6H108V12ZM114 36H108V12H114V36Z" fill="var(--icon-base)" />
-        <path d="M144 30H126V18H144V30Z" fill="var(--icon-weak-base)" />
-        <path d="M144 12H126V30H144V36H120V6H144V12Z" fill="var(--icon-strong-base)" />
-        <path d="M168 30H156V18H168V30Z" fill="var(--icon-weak-base)" />
-        <path d="M168 12H156V30H168V12ZM174 36H150V6H174V36Z" fill="var(--icon-strong-base)" />
-        <path d="M198 30H186V18H198V30Z" fill="var(--icon-weak-base)" />
-        <path d="M198 12H186V30H198V12ZM204 36H180V6H198V0H204V36Z" fill="var(--icon-strong-base)" />
-        <path d="M234 24V30H216V24H234Z" fill="var(--icon-weak-base)" />
-        <path d="M216 12V18H228V12H216ZM234 24H216V30H234V36H210V6H234V24Z" fill="var(--icon-strong-base)" />
-      </g>
+      <FMark />
+      <text
+        x="210"
+        y="155"
+        font-family="Georgia, 'Times New Roman', 'Cormorant Garamond', serif"
+        font-size="135"
+        font-weight="700"
+        fill="var(--icon-strong-base)"
+        letter-spacing="-3"
+      >
+        irlaw
+      </text>
+      <rect x="210" y="170" width="120" height="3" fill="#C9A961" />
     </svg>
   )
 }
