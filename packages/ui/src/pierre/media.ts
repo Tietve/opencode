@@ -1,9 +1,11 @@
 import type { FileContent } from "@opencode-ai/sdk/v2"
 
-export type MediaKind = "image" | "audio" | "svg"
+export type MediaKind = "image" | "audio" | "svg" | "html" | "docx"
 
 const imageExtensions = new Set(["png", "jpg", "jpeg", "gif", "webp", "avif", "bmp", "ico", "tif", "tiff", "heic"])
 const audioExtensions = new Set(["mp3", "wav", "ogg", "m4a", "aac", "flac", "opus"])
+const htmlExtensions = new Set(["html", "htm"])
+const docxExtensions = new Set(["docx"])
 
 type MediaValue = unknown
 
@@ -38,6 +40,8 @@ export function mediaKindFromPath(path: string | undefined): MediaKind | undefin
   if (ext === "svg") return "svg"
   if (imageExtensions.has(ext)) return "image"
   if (audioExtensions.has(ext)) return "audio"
+  if (htmlExtensions.has(ext)) return "html"
+  if (docxExtensions.has(ext)) return "docx"
 }
 
 export function isBinaryContent(value: MediaValue) {
@@ -80,15 +84,38 @@ export function dataUrlFromMediaValue(value: MediaValue, kind: MediaKind) {
   return `data:${mime};base64,${record.content}`
 }
 
-function decodeBase64Utf8(value: string) {
+export function decodeBase64Bytes(value: string): Uint8Array | undefined {
   if (typeof atob !== "function") return
-
   try {
     const raw = atob(value)
-    const bytes = Uint8Array.from(raw, (x) => x.charCodeAt(0))
-    if (typeof TextDecoder === "function") return new TextDecoder().decode(bytes)
-    return raw
+    return Uint8Array.from(raw, (x) => x.charCodeAt(0))
   } catch {}
+}
+
+export function decodeBase64Utf8(value: string) {
+  const bytes = decodeBase64Bytes(value)
+  if (!bytes) return
+  if (typeof TextDecoder === "function") return new TextDecoder().decode(bytes)
+  let raw = ""
+  for (const byte of bytes) raw += String.fromCharCode(byte)
+  return raw
+}
+
+export function htmlTextFromValue(value: unknown): string | undefined {
+  if (typeof value === "string") return value
+  const record = mediaRecord(value)
+  if (!record) return
+  if (typeof record.content !== "string") return
+  if (record.encoding === "base64") return decodeBase64Utf8(record.content)
+  return record.content
+}
+
+export function base64FromValue(value: unknown): string | undefined {
+  const record = mediaRecord(value)
+  if (!record) return
+  if (typeof record.content !== "string") return
+  if (record.encoding !== "base64") return
+  return record.content
 }
 
 export function svgTextFromValue(value: MediaValue) {
