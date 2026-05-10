@@ -13,8 +13,9 @@ import {
   svgTextFromValue,
 } from "../pierre/media"
 
-const HTML_MAX_BYTES = 5 * 1024 * 1024
-const DOCX_MAX_BASE64 = 35 * 1024 * 1024 // ~25MB binary
+const HTML_MAX_CHARS = 5 * 1024 * 1024
+// 35 MB of base64 ~= 26 MB of decoded binary (base64 inflates 4/3).
+const DOCX_MAX_BASE64 = 35 * 1024 * 1024
 
 function wrapHtmlDocument(body: string) {
   return `<!doctype html><html><head><meta charset="utf-8"><base target="_blank"><style>html,body{margin:0}body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:24px;color:#222;line-height:1.6;max-width:860px;margin:0 auto;background:#fff}h1,h2,h3,h4,h5,h6{line-height:1.3}table{border-collapse:collapse;margin:12px 0}td,th{border:1px solid #d4d4d4;padding:6px 10px}img{max-width:100%;height:auto}pre,code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#f4f4f4;padding:2px 4px;border-radius:3px}pre{padding:12px;overflow:auto}</style></head><body>${body}</body></html>`
@@ -180,6 +181,7 @@ export function FileMedia(props: { media?: FileMediaOptions; fallback: () => JSX
   const htmlRequest = createMemo(() => {
     const media = cfg()
     if (!media || kind() !== "html") return
+    if (deleted()) return
     if (htmlDirect() !== undefined) return
     if (!media.path || !media.readFile) return
     return {
@@ -220,7 +222,7 @@ export function FileMedia(props: { media?: FileMediaOptions; fallback: () => JSX
   const htmlTooLarge = createMemo(() => {
     const text = htmlText()
     if (text === undefined) return false
-    return text.length > HTML_MAX_BYTES
+    return text.length > HTML_MAX_CHARS
   })
 
   const htmlSrcdoc = createMemo(() => {
@@ -233,6 +235,7 @@ export function FileMedia(props: { media?: FileMediaOptions; fallback: () => JSX
 
   const htmlStatus = createMemo(() => {
     if (kind() !== "html") return "idle" as const
+    if (deleted()) return "removed" as const
     if (htmlTooLarge()) return "tooLarge" as const
     if (htmlSrcdoc() !== undefined) return "ready" as const
     if (!htmlRequest()) return "idle" as const
@@ -279,10 +282,9 @@ export function FileMedia(props: { media?: FileMediaOptions; fallback: () => JSX
         input.onError?.({ kind: "docx" })
         return { key: input.key, error: true as const }
       }
-      const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)
       const mod: any = await import("mammoth/mammoth.browser.js")
       const mammoth = mod?.default ?? mod
-      const result = await mammoth.convertToHtml({ arrayBuffer: buffer })
+      const result = await mammoth.convertToHtml({ arrayBuffer: bytes.buffer })
       const body = typeof result?.value === "string" ? result.value : ""
       return { key: input.key, html: wrapHtmlDocument(body) }
     } catch (err) {
@@ -416,6 +418,13 @@ export function FileMedia(props: { media?: FileMediaOptions; fallback: () => JSX
                   class="min-h-[60vh] w-full max-w-full rounded border border-border-weak-base bg-background-base"
                   onLoad={onLoad}
                 />
+              </div>
+            )
+          }
+          if (status === "removed") {
+            return (
+              <div class="flex min-h-40 items-center justify-center px-6 py-4 text-center text-text-weak">
+                {i18n.t("ui.fileMedia.state.removed", { kind: label })}
               </div>
             )
           }
