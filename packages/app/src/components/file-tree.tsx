@@ -299,6 +299,26 @@ export default function FileTree(props: {
           input.click()
           break
         }
+        case "upload-folder": {
+          const input = document.createElement("input")
+          input.type = "file"
+          input.multiple = true
+          input.setAttribute("webkitdirectory", "")
+          input.setAttribute("directory", "")
+          input.onchange = async () => {
+            const files = input.files
+            if (!files || files.length === 0) return
+            try {
+              const result = await file.firlawFiles.uploadFolder(apiPath, files)
+              await file.tree.refresh(node.path)
+              showToast({ variant: "success", title: `Đã upload ${result.uploaded} files` })
+            } catch (e) {
+              showToast({ variant: "error", title: errorMessageOf(e, "Upload folder thất bại") })
+            }
+          }
+          input.click()
+          break
+        }
       }
     } catch (e) {
       showToast({ variant: "error", title: errorMessageOf(e, "Thao tác thất bại") })
@@ -497,6 +517,9 @@ export default function FileTree(props: {
               </ContextMenu.Item>
               <ContextMenu.Item onSelect={() => void handleContextAction("upload-here", node)}>
                 <ContextMenu.ItemLabel>Upload vào đây</ContextMenu.ItemLabel>
+              </ContextMenu.Item>
+              <ContextMenu.Item onSelect={() => void handleContextAction("upload-folder", node)}>
+                <ContextMenu.ItemLabel>Upload folder</ContextMenu.ItemLabel>
               </ContextMenu.Item>
             </Show>
             <ContextMenu.Item onSelect={() => void handleContextAction("rename", node)}>
