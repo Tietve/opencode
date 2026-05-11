@@ -2346,6 +2346,20 @@ export default function Layout(props: ParentProps) {
       onOpenSettings={openSettings}
       helpLabel={() => language.t("sidebar.help")}
       onOpenHelp={() => platform.openLink("https://opencode.ai/desktop-feedback")}
+      reloadLabel={() => "Nạp lại skills"}
+      onReload={async () => {
+        try {
+          await fetch("/opencode/instance/dispose", {
+            method: "POST",
+            credentials: "include",
+          })
+          // Reload window so the SDK re-fetches skill list against the
+          // freshly-booted InstanceState.
+          window.location.reload()
+        } catch (err) {
+          console.error("[firlaw] reload skills failed", err)
+        }
+      }}
       logoutLabel={() => "Đăng xuất"}
       onLogout={async () => {
         try {
