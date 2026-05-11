@@ -35,11 +35,6 @@ export const SidebarContent = (props: {
   // app has no auth so the host doesn't pass these props).
   logoutLabel?: Accessor<string>
   onLogout?: () => void
-  // Firlaw: optional "Reload skills" entry rendered on the sidebar rail.
-  // Calls POST /opencode/instance/dispose to flush the per-user InstanceState
-  // cache so new SKILL.md files are picked up without a container restart.
-  reloadLabel?: Accessor<string>
-  onReload?: () => void
   renderPanel: () => JSX.Element
 }): JSX.Element => {
   const expanded = createMemo(() => !!props.mobile || props.opened())
@@ -118,17 +113,6 @@ export const SidebarContent = (props: {
               aria-label={props.helpLabel()}
             />
           </Tooltip>
-          <Show when={props.onReload && props.reloadLabel}>
-            <Tooltip placement={placement()} value={props.reloadLabel!()}>
-              <IconButton
-                icon="reset"
-                variant="ghost"
-                size="large"
-                onClick={props.onReload}
-                aria-label={props.reloadLabel!()}
-              />
-            </Tooltip>
-          </Show>
           <Show when={props.onLogout && props.logoutLabel}>
             <Tooltip placement={placement()} value={props.logoutLabel!()}>
               <IconButton

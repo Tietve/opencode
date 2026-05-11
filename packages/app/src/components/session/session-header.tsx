@@ -269,6 +269,25 @@ export function SessionHeader() {
       .catch((err: unknown) => showRequestError(language, err))
   }
 
+  // Firlaw: flush per-user InstanceState cache so freshly-added SKILL.md
+  // files under accounts/<name>/.opencode/skills/ show up without a
+  // container restart. The thin proxy auto-injects x-opencode-directory
+  // so dispose only affects the caller's instance.
+  const [reloading, setReloading] = createSignal(false)
+  const reloadSkills = async () => {
+    setReloading(true)
+    try {
+      await fetch("/opencode/instance/dispose", {
+        method: "POST",
+        credentials: "include",
+      })
+      window.location.reload()
+    } catch (err) {
+      setReloading(false)
+      showRequestError(language, err)
+    }
+  }
+
   const [centerMount, setCenterMount] = createSignal<HTMLElement | null>(null)
   const [rightMount, setRightMount] = createSignal<HTMLElement | null>(null)
   onMount(() => {
@@ -312,6 +331,16 @@ export function SessionHeader() {
         {(mount) => (
           <Portal mount={mount()}>
             <div class="flex items-center gap-2">
+              <Tooltip value="Nạp lại skills">
+                <IconButton
+                  icon="reload"
+                  variant="ghost"
+                  size="small"
+                  onClick={reloadSkills}
+                  disabled={reloading()}
+                  aria-label="Nạp lại skills"
+                />
+              </Tooltip>
               <Show when={projectDirectory()}>
                 <div class="hidden xl:flex items-center">
                   <Show
