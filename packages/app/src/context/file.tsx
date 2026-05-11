@@ -104,6 +104,23 @@ export const { use: useFile, provider: FileProvider } = createSimpleContext({
         })
         if (!res.ok) throw new Error(await readApiError(res, "upload failed"))
       },
+      async uploadFolder(parentPath: string, files: FileList | File[]): Promise<{ uploaded: number }> {
+        const filesArr = Array.from(files)
+        if (filesArr.length === 0) return { uploaded: 0 }
+        const relpaths = filesArr.map((f) => f.webkitRelativePath || f.name)
+        const fd = new FormData()
+        fd.append("parentPath", parentPath)
+        fd.append("relpaths", JSON.stringify(relpaths))
+        for (const f of filesArr) fd.append("files", f)
+        const res = await fetch("/api/v2/files/upload-batch", {
+          method: "POST",
+          body: fd,
+          credentials: "include",
+        })
+        if (!res.ok) throw new Error(await readApiError(res, "upload folder failed"))
+        const body = (await res.json().catch(() => ({}))) as { uploaded?: number }
+        return { uploaded: body.uploaded ?? filesArr.length }
+      },
       download(filePath: string): void {
         const url = `/api/v2/files/download?path=${encodeURIComponent(filePath)}`
         const a = document.createElement("a")

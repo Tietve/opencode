@@ -2356,7 +2356,7 @@ export default function Layout(props: ParentProps) {
             body: "{}",
           })
         } catch {}
-        location.replace("/login.html")
+        window.location.replace("/login.html")
       }}
       renderPanel={() =>
         mobile ? <SidebarPanel project={currentProject} mobile /> : <SidebarPanel project={currentProject} merged />
