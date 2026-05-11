@@ -83,6 +83,64 @@ export const { use: useFile, provider: FileProvider } = createSimpleContext({
       },
     })
 
+    async function readApiError(res: Response, fallback: string): Promise<string> {
+      try {
+        const body = (await res.json()) as { error?: { message?: string } }
+        return body?.error?.message ?? fallback
+      } catch {
+        return fallback
+      }
+    }
+
+    const firlawFiles = {
+      async upload(targetDir: string, item: File): Promise<void> {
+        const fd = new FormData()
+        fd.append("path", targetDir)
+        fd.append("file", item)
+        const res = await fetch("/api/v2/files/upload", {
+          method: "POST",
+          body: fd,
+          credentials: "include",
+        })
+        if (!res.ok) throw new Error(await readApiError(res, "upload failed"))
+      },
+      download(filePath: string): void {
+        const url = `/api/v2/files/download?path=${encodeURIComponent(filePath)}`
+        const a = document.createElement("a")
+        a.href = url
+        a.rel = "noopener"
+        a.download = ""
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      },
+      async delete(filePath: string): Promise<void> {
+        const res = await fetch(`/api/v2/files?path=${encodeURIComponent(filePath)}`, {
+          method: "DELETE",
+          credentials: "include",
+        })
+        if (!res.ok) throw new Error(await readApiError(res, "delete failed"))
+      },
+      async mkdir(dirPath: string): Promise<void> {
+        const res = await fetch("/api/v2/files/mkdir", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ path: dirPath }),
+        })
+        if (!res.ok) throw new Error(await readApiError(res, "mkdir failed"))
+      },
+      async rename(from: string, to: string): Promise<void> {
+        const res = await fetch("/api/v2/files/rename", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ from, to }),
+        })
+        if (!res.ok) throw new Error(await readApiError(res, "rename failed"))
+      },
+    }
+
     const evictContent = (keep?: Set<string>) => {
       evictContentLru(keep, (target) => {
         if (!store.file[target]) return
@@ -275,6 +333,7 @@ export const { use: useFile, provider: FileProvider } = createSimpleContext({
       setSelectedLines,
       searchFiles: (query: string) => search(query, "false"),
       searchFilesAndDirectories: (query: string) => search(query, "true"),
+      firlawFiles,
     }
   },
 })
