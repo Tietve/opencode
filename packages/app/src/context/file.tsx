@@ -85,8 +85,8 @@ export const { use: useFile, provider: FileProvider } = createSimpleContext({
 
     async function readApiError(res: Response, fallback: string): Promise<string> {
       try {
-        const body = (await res.json()) as { error?: { message?: string } }
-        return body?.error?.message ?? fallback
+        const body = (await res.json()) as { message?: string; error?: { message?: string } }
+        return body?.message ?? body?.error?.message ?? fallback
       } catch {
         return fallback
       }
