@@ -4,6 +4,7 @@ import { createSimpleContext } from "@opencode-ai/ui/context"
 import { showToast } from "@opencode-ai/ui/toast"
 import { useParams } from "@solidjs/router"
 import { getFilename } from "@opencode-ai/core/util/path"
+import type { FileContent } from "@opencode-ai/sdk/v2"
 import { useSDK } from "./sdk"
 import { useSync } from "./sync"
 import { useLanguage } from "@/context/language"
@@ -156,7 +157,21 @@ export const { use: useFile, provider: FileProvider } = createSimpleContext({
         })
         if (!res.ok) throw new Error(await readApiError(res, "rename failed"))
       },
+      // Preview .docx qua Firlaw backend — backend dùng mammoth.extractRawText
+      // trả plain text. Bypass OpenCode SDK vì SDK trả binary base64 không
+      // render được trong TextViewer.
+      async previewDocx(filePath: string): Promise<string> {
+        const res = await fetch(`/api/v2/files/content?path=${encodeURIComponent(filePath)}`, {
+          credentials: "include",
+        })
+        if (!res.ok) throw new Error(await readApiError(res, "docx preview failed"))
+        return res.text()
+      },
     }
+
+    // .docx routes through Firlaw backend (mammoth extract), khác file types
+    // dùng OpenCode SDK upstream. Match case-insensitive cho path Windows-like.
+    const isDocxPath = (filePath: string) => filePath.toLowerCase().endsWith(".docx")
 
     const evictContent = (keep?: Set<string>) => {
       evictContentLru(keep, (target) => {
@@ -246,11 +261,16 @@ export const { use: useFile, provider: FileProvider } = createSimpleContext({
 
       setLoading(file)
 
-      const promise = sdk.client.file
-        .read({ path: file })
-        .then((x) => {
+      // Branch .docx → Firlaw backend (mammoth extract); else → OpenCode SDK.
+      const fetchContent = isDocxPath(file)
+        ? firlawFiles
+            .previewDocx(file)
+            .then<FileContent>((text) => ({ type: "text", content: text }))
+        : sdk.client.file.read({ path: file }).then((x) => x.data)
+
+      const promise = fetchContent
+        .then((content) => {
           if (scope() !== directory) return
-          const content = x.data
           setLoaded(file, content)
 
           if (!content) return
