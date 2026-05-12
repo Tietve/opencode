@@ -18,8 +18,6 @@ import { usePlatform } from "@/context/platform"
 import { useServer } from "@/context/server"
 import { useSettings } from "@/context/settings"
 import { useSync } from "@/context/sync"
-import { useTerminal } from "@/context/terminal"
-import { focusTerminalById } from "@/pages/session/helpers"
 import { useSessionLayout } from "@/pages/session/session-layout"
 import { messageAgentColor } from "@/utils/agent"
 import { decode64 } from "@/utils/base64"
@@ -137,7 +135,6 @@ export function SessionHeader() {
   const language = useLanguage()
   const settings = useSettings()
   const sync = useSync()
-  const terminal = useTerminal()
   const { params, view } = useSessionLayout()
 
   const projectDirectory = createMemo(() => decode64(params.dir) ?? "")
@@ -156,7 +153,6 @@ export function SessionHeader() {
   const isDesktopBeta = platform.platform === "desktop" && import.meta.env.VITE_OPENCODE_CHANNEL === "beta"
   const search = createMemo(() => !isDesktopBeta || settings.general.showSearch())
   const tree = createMemo(() => !isDesktopBeta || settings.general.showFileTree())
-  const term = createMemo(() => !isDesktopBeta || settings.general.showTerminal())
   const status = createMemo(() => !isDesktopBeta || settings.general.showStatus())
 
   const [exists, setExists] = createStore<Partial<Record<OpenApp, boolean>>>({
@@ -204,16 +200,6 @@ export function SessionHeader() {
     ] as const
   })
 
-  const toggleTerminal = () => {
-    const next = !view().terminal.opened()
-    view().terminal.toggle()
-    if (!next) return
-
-    const id = terminal.active()
-    if (!id) return
-    focusTerminalById(id)
-  }
-
   const [prefs, setPrefs] = persisted(Persist.global("open.app"), createStore({ app: "finder" as OpenApp }))
   const [menu, setMenu] = createStore({ open: false })
   const [openRequest, setOpenRequest] = createStore({
@@ -251,22 +237,6 @@ export function SessionHeader() {
       .finally(() => {
         setOpenRequest("app", undefined)
       })
-  }
-
-  const copyPath = () => {
-    const directory = projectDirectory()
-    if (!directory) return
-    navigator.clipboard
-      .writeText(directory)
-      .then(() => {
-        showToast({
-          variant: "success",
-          icon: "circle-check",
-          title: language.t("session.share.copy.copied"),
-          description: directory,
-        })
-      })
-      .catch((err: unknown) => showRequestError(language, err))
   }
 
   const [centerMount, setCenterMount] = createSignal<HTMLElement | null>(null)
@@ -314,24 +284,7 @@ export function SessionHeader() {
             <div class="flex items-center gap-2">
               <Show when={projectDirectory()}>
                 <div class="hidden xl:flex items-center">
-                  <Show
-                    when={canOpen()}
-                    fallback={
-                      <div class="flex h-[24px] box-border items-center rounded-md border border-border-weak-base bg-surface-panel overflow-hidden">
-                        <Button
-                          variant="ghost"
-                          class="rounded-none h-full py-0 pr-3 pl-0.5 gap-1.5 border-none shadow-none"
-                          onClick={copyPath}
-                          aria-label={language.t("session.header.open.copyPath")}
-                        >
-                          <Icon name="copy" size="small" class="text-icon-base" />
-                          <span class="text-12-regular text-text-strong">
-                            {language.t("session.header.open.copyPath")}
-                          </span>
-                        </Button>
-                      </div>
-                    }
-                  >
+                  <Show when={canOpen()}>
                     <div class="flex items-center">
                       <div class="flex h-[24px] box-border items-center rounded-md border border-border-weak-base bg-surface-panel overflow-hidden">
                         <Button
@@ -403,20 +356,6 @@ export function SessionHeader() {
                                   </For>
                                 </DropdownMenu.RadioGroup>
                               </DropdownMenu.Group>
-                              <DropdownMenu.Separator />
-                              <DropdownMenu.Item
-                                onSelect={() => {
-                                  setMenu("open", false)
-                                  copyPath()
-                                }}
-                              >
-                                <div class="flex size-5 shrink-0 items-center justify-center">
-                                  <Icon name="copy" size="small" class="text-icon-weak" />
-                                </div>
-                                <DropdownMenu.ItemLabel>
-                                  {language.t("session.header.open.copyPath")}
-                                </DropdownMenu.ItemLabel>
-                              </DropdownMenu.Item>
                             </DropdownMenu.Content>
                           </DropdownMenu.Portal>
                         </DropdownMenu>
@@ -430,23 +369,6 @@ export function SessionHeader() {
                   <Tooltip placement="bottom" value={language.t("status.popover.trigger")}>
                     <StatusPopover />
                   </Tooltip>
-                </Show>
-                <Show when={term()}>
-                  <TooltipKeybind
-                    title={language.t("command.terminal.toggle")}
-                    keybind={command.keybind("terminal.toggle")}
-                  >
-                    <Button
-                      variant="ghost"
-                      class="group/terminal-toggle titlebar-icon w-8 h-6 p-0 box-border shrink-0"
-                      onClick={toggleTerminal}
-                      aria-label={language.t("command.terminal.toggle")}
-                      aria-expanded={view().terminal.opened()}
-                      aria-controls="terminal-panel"
-                    >
-                      <Icon size="small" name={view().terminal.opened() ? "terminal-active" : "terminal"} />
-                    </Button>
-                  </TooltipKeybind>
                 </Show>
 
                 <div class="hidden md:flex items-center gap-1 shrink-0">
