@@ -51,7 +51,7 @@ export interface Settings {
 }
 
 export const monoDefault = "System Mono"
-export const sansDefault = "System Sans"
+export const sansDefault = "Inter"
 export const terminalDefault = "JetBrainsMono Nerd Font Mono"
 
 const monoFallback =

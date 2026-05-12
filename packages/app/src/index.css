@@ -7,6 +7,14 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/InterVariable.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer components {
   @keyframes session-progress-whip {
     0% {
