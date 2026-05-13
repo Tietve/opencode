@@ -28,8 +28,6 @@ export const SidebarContent = (props: {
   settingsLabel: Accessor<string>
   settingsKeybind: Accessor<string | undefined>
   onOpenSettings: () => void
-  helpLabel: Accessor<string>
-  onOpenHelp: () => void
   // Firlaw: optional logout entry rendered next to settings/help on the
   // sidebar rail. Falls back gracefully when not provided (upstream desktop
   // app has no auth so the host doesn't pass these props).
@@ -104,15 +102,6 @@ export const SidebarContent = (props: {
               aria-label={props.settingsLabel()}
             />
           </TooltipKeybind>
-          <Tooltip placement={placement()} value={props.helpLabel()}>
-            <IconButton
-              icon="help"
-              variant="ghost"
-              size="large"
-              onClick={props.onOpenHelp}
-              aria-label={props.helpLabel()}
-            />
-          </Tooltip>
           <Show when={props.onLogout && props.logoutLabel}>
             <Tooltip placement={placement()} value={props.logoutLabel!()}>
               <IconButton
