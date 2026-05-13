@@ -256,7 +256,19 @@ export default function FileTree(props: {
           break
         case "delete": {
           if (!window.confirm(`Xóa "${node.name}"? Thao tác này không thể khôi phục.`)) return
-          await file.firlawFiles.delete(apiPath)
+          let res = await file.firlawFiles.delete(apiPath)
+          if (res.status === 409) {
+            // Folder không rỗng — hỏi user có muốn xóa cả nội dung không.
+            const confirmAll = window.confirm(
+              `Folder "${node.name}" còn chứa file/folder con.\n\n` +
+                `Bạn có chắc muốn XÓA TẤT CẢ không? Thao tác này không thể khôi phục.`,
+            )
+            if (!confirmAll) return
+            res = await file.firlawFiles.delete(apiPath, true)
+            if (!res.ok) {
+              throw new Error("recursive delete failed")
+            }
+          }
           await file.tree.refresh(parentKey)
           showToast({ variant: "success", title: "Đã xóa" })
           break

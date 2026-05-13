@@ -132,12 +132,19 @@ export const { use: useFile, provider: FileProvider } = createSimpleContext({
         a.click()
         document.body.removeChild(a)
       },
-      async delete(filePath: string): Promise<void> {
-        const res = await fetch(`/api/v2/files?path=${encodeURIComponent(filePath)}`, {
+      // recursive=true xóa folder + toàn bộ nội dung (rm -rf). Frontend chỉ
+      // nên truyền true SAU KHI user confirm. Default false → folder không
+      // rỗng trả 409 (caller bắt rồi hỏi user, retry với recursive=true).
+      async delete(filePath: string, recursive = false): Promise<Response> {
+        const qs = `path=${encodeURIComponent(filePath)}${recursive ? "&recursive=true" : ""}`
+        const res = await fetch(`/api/v2/files?${qs}`, {
           method: "DELETE",
           credentials: "include",
         })
-        if (!res.ok) throw new Error(await readApiError(res, "delete failed"))
+        if (!res.ok && res.status !== 409) {
+          throw new Error(await readApiError(res, "delete failed"))
+        }
+        return res
       },
       async mkdir(dirPath: string): Promise<void> {
         const res = await fetch("/api/v2/files/mkdir", {
