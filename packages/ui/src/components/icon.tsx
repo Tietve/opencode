@@ -1,4 +1,4 @@
-import { splitProps, type ComponentProps } from "solid-js"
+import { onMount, splitProps, type ComponentProps } from "solid-js"
 
 const icons = {
   "align-right": `<path d="M12.292 6.04167L16.2503 9.99998L12.292 13.9583M2.91699 9.99998H15.6253M17.0837 3.75V16.25" stroke="currentColor" stroke-linecap="square"/>`,
@@ -107,6 +107,41 @@ const icons = {
   reload: `<path d="M17.0833 5.83333V10H12.9167M2.91667 14.1667V10H7.08333M4.65 7.5C5.0473 6.42018 5.74317 5.48068 6.65114 4.79617C7.5591 4.11167 8.64193 3.71336 9.76528 3.65133C10.8886 3.5893 11.999 3.86609 12.9665 4.44697C13.934 5.02785 14.7165 5.88793 15.2167 6.91667M4.78333 13.0833C5.28354 14.1121 6.06606 14.9722 7.03353 15.553C8.001 16.1339 9.11147 16.4106 10.2348 16.3486C11.3581 16.2866 12.4409 15.8883 13.3489 15.2038C14.2569 14.5193 14.9527 13.5798 15.35 12.5" stroke="currentColor" stroke-linecap="square"/>`,
 }
 
+const spriteID = "opencode-icon-sprite"
+const symbol = (name: keyof typeof icons) => `opencode-icon-${name}`
+let spriteInserted = false
+
+function viewBox(name: keyof typeof icons) {
+  return name === "magnifying-glass" || name === "arrow-undo-down" ? "0 0 16 16" : "0 0 20 20"
+}
+
+function ensureSprite() {
+  if (spriteInserted) return
+  if (typeof document === "undefined") return
+  if (document.getElementById(spriteID)) {
+    spriteInserted = true
+    return
+  }
+  const body = document.body as HTMLElement | null
+  if (!body) return
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+  svg.id = spriteID
+  svg.setAttribute("aria-hidden", "true")
+  svg.setAttribute("width", "0")
+  svg.setAttribute("height", "0")
+  svg.style.position = "absolute"
+  svg.style.overflow = "hidden"
+  svg.innerHTML = Object.entries(icons)
+    .map(([name, path]) => {
+      const key = name as keyof typeof icons
+      return `<symbol id="${symbol(key)}" viewBox="${viewBox(key)}">${path}</symbol>`
+    })
+    .join("")
+  body.insertBefore(svg, body.firstChild)
+  spriteInserted = true
+}
+
 export interface IconProps extends ComponentProps<"svg"> {
   name: keyof typeof icons
   size?: "small" | "normal" | "medium" | "large"
@@ -114,8 +149,8 @@ export interface IconProps extends ComponentProps<"svg"> {
 
 export function Icon(props: IconProps) {
   const [local, others] = splitProps(props, ["name", "size", "class", "classList"])
-  const viewBox = () =>
-    local.name === "magnifying-glass" || local.name === "arrow-undo-down" ? "0 0 16 16" : "0 0 20 20"
+  onMount(ensureSprite)
+
   return (
     <div data-component="icon" data-size={local.size || "normal"}>
       <svg
@@ -125,11 +160,12 @@ export function Icon(props: IconProps) {
           [local.class ?? ""]: !!local.class,
         }}
         fill="none"
-        viewBox={viewBox()}
-        innerHTML={icons[local.name as keyof typeof icons]}
+        viewBox={viewBox(local.name)}
         aria-hidden="true"
         {...others}
-      />
+      >
+        <use href={`#${symbol(local.name)}`} />
+      </svg>
     </div>
   )
 }
