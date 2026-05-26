@@ -1,0 +1,70 @@
+/**
+ * Firlaw UI overrides — all Firlaw-specific visual customizations live here.
+ * Keep upstream JSX files clean; add CSS rules here instead of inline class changes.
+ *
+ * CSS variables let us tune sizing from one place without touching upstream components.
+ */
+
+/* ─── Titlebar ─────────────────────────────────────────────────────────────── */
+:root {
+  --firlaw-titlebar-height: 3.5rem;     /* 56px — upstream default is 2.5rem (40px) */
+  --firlaw-titlebar-btn-size: 2.5rem;   /* 40px (10 in Tailwind) */
+  --firlaw-titlebar-btn-radius: 10px;
+  --firlaw-titlebar-icon-size: 1.25rem; /* medium icon — upstream uses small (1rem) */
+}
+
+/* Override header height */
+header[data-tauri-drag-region] {
+  height: var(--firlaw-titlebar-height);
+}
+
+/* Larger titlebar action buttons */
+.titlebar-icon {
+  width: var(--firlaw-titlebar-btn-size);
+  height: var(--firlaw-titlebar-btn-size);
+  border-radius: var(--firlaw-titlebar-btn-radius);
+}
+
+/* Upgrade icon size inside titlebar buttons */
+.titlebar-icon [data-component="icon"] {
+  width: var(--firlaw-titlebar-icon-size);
+  height: var(--firlaw-titlebar-icon-size);
+}
+
+/* ─── Session Header ────────────────────────────────────────────────────────── */
+
+/* Larger open-dir button (height + radius) */
+.firlaw-open-dir-btn {
+  height: var(--firlaw-titlebar-btn-size) !important;
+  border-radius: var(--firlaw-titlebar-btn-radius) !important;
+}
+
+/* Show the "Thư mục" label inline — upstream button doesn't have text label */
+.firlaw-dir-label {
+  display: inline;
+  font-size: 0.875rem; /* text-sm */
+  padding-left: 0.5rem;
+}
+
+/* Review + File Tree toggle buttons — same sizing as titlebar icons */
+.firlaw-header-action-btn {
+  width: auto !important;
+  height: var(--firlaw-titlebar-btn-size) !important;
+  border-radius: var(--firlaw-titlebar-btn-radius) !important;
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+  gap: 0.5rem !important;
+}
+
+/* Show "Review" label text next to icon */
+.firlaw-btn-label {
+  display: inline;
+  font-size: 0.875rem; /* text-sm */
+}
+
+/* Reload skills button */
+.firlaw-reload-skills-btn {
+  width: var(--firlaw-titlebar-btn-size) !important;
+  height: var(--firlaw-titlebar-btn-size) !important;
+  border-radius: var(--firlaw-titlebar-btn-radius) !important;
+}

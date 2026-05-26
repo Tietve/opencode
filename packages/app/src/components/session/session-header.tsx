@@ -260,8 +260,7 @@ export function SessionHeader() {
                 <IconButton
                   icon="reload"
                   variant="ghost"
-                  size="large"
-                  class="w-10 h-10 rounded-[10px]"
+                  class="firlaw-reload-skills-btn"
                   onClick={reloadSkills}
                   disabled={reloading()}
                   aria-label="Nạp lại skills"
@@ -271,10 +270,10 @@ export function SessionHeader() {
                 <div class="hidden xl:flex items-center">
                   <Show when={canOpen()}>
                     <div class="flex items-center">
-                      <div class="flex h-10 box-border items-center rounded-[10px] border border-border-weak-base bg-surface-panel overflow-hidden">
+                      <div class="flex h-[24px] box-border items-center rounded-md border border-border-weak-base bg-surface-panel overflow-hidden firlaw-open-dir-btn">
                         <Button
                           variant="ghost"
-                          class="rounded-none h-full px-3 gap-2 border-none shadow-none disabled:!cursor-default text-sm"
+                          class="rounded-none h-full px-0.5 border-none shadow-none disabled:!cursor-default"
                           classList={{
                             "bg-surface-raised-base-active": opening(),
                           }}
@@ -287,7 +286,8 @@ export function SessionHeader() {
                               <Spinner class="size-3.5" style={{ color: tint() ?? "var(--icon-base)" }} />
                             </Show>
                           </div>
-                          <span>Thư mục</span>
+                          {/* Firlaw: show folder label */}
+                          <span class="firlaw-dir-label">Thư mục</span>
                         </Button>
                         <DropdownMenu
                           gutter={4}
@@ -300,7 +300,7 @@ export function SessionHeader() {
                             icon="chevron-down"
                             variant="ghost"
                             disabled={opening()}
-                            class="rounded-none h-full w-[28px] p-0 border-none shadow-none data-[expanded]:bg-surface-raised-base-active disabled:!cursor-default"
+                            class="rounded-none h-full w-[20px] p-0 border-none shadow-none data-[expanded]:bg-surface-raised-base-active disabled:!cursor-default"
                             classList={{
                               "bg-surface-raised-base-active": opening(),
                             }}
@@ -356,21 +356,22 @@ export function SessionHeader() {
                     <StatusPopover />
                   </Tooltip>
                 </Show>
-                <div class="hidden md:flex items-center gap-2 shrink-0">
+                <div class="hidden md:flex items-center gap-1 shrink-0">
                   <TooltipKeybind
                     title={language.t("command.review.toggle")}
                     keybind={command.keybind("review.toggle")}
                   >
                     <Button
                       variant="ghost"
-                      class="group/review-toggle titlebar-icon h-10 px-3 gap-2 box-border rounded-[10px] text-sm"
+                      class="group/review-toggle titlebar-icon w-8 h-6 p-0 box-border firlaw-header-action-btn"
                       onClick={() => view().reviewPanel.toggle()}
                       aria-label={language.t("command.review.toggle")}
                       aria-expanded={view().reviewPanel.opened()}
                       aria-controls="review-panel"
                     >
-                      <Icon size="medium" name={view().reviewPanel.opened() ? "review-active" : "review"} />
-                      <span>Review</span>
+                      <Icon size="small" name={view().reviewPanel.opened() ? "review-active" : "review"} />
+                      {/* Firlaw: show review label */}
+                      <span class="firlaw-btn-label">Review</span>
                     </Button>
                   </TooltipKeybind>
 
@@ -381,15 +382,15 @@ export function SessionHeader() {
                     >
                       <Button
                         variant="ghost"
-                        class="titlebar-icon w-10 h-10 p-0 box-border rounded-[10px]"
+                        class="titlebar-icon w-8 h-6 p-0 box-border firlaw-header-action-btn"
                         onClick={() => layout.fileTree.toggle()}
                         aria-label={language.t("command.fileTree.toggle")}
                         aria-expanded={layout.fileTree.opened()}
                         aria-controls="file-tree-panel"
                       >
-                        <div class="relative flex items-center justify-center size-5">
+                        <div class="relative flex items-center justify-center size-4">
                           <Icon
-                            size="medium"
+                            size="small"
                             name={layout.fileTree.opened() ? "file-tree-active" : "file-tree"}
                             classList={{
                               "text-icon-strong": layout.fileTree.opened(),

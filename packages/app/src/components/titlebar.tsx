@@ -36,7 +36,7 @@ type TauriApi = {
 const tauriApi = () => (window as unknown as { __TAURI__?: TauriApi }).__TAURI__
 const currentDesktopWindow = () => tauriApi()?.window?.getCurrentWindow?.()
 const currentThemeWindow = () => tauriApi()?.webviewWindow?.getCurrentWebviewWindow?.()
-const titlebarHeight = 56
+const titlebarHeight = 40
 const minTitlebarZoom = 0.25
 const windowsControlsBaseWidth = 138 // 3 native Windows caption buttons at 46px each.
 
@@ -176,7 +176,7 @@ export function Titlebar() {
 
   return (
     <header
-      class="h-14 shrink-0 bg-background-base relative overflow-hidden"
+      class="h-10 shrink-0 bg-background-base relative overflow-hidden"
       style={{ "min-height": minHeight() }}
       data-tauri-drag-region
       onMouseDown={drag}
@@ -217,7 +217,8 @@ export function Titlebar() {
               />
             </div>
           </Show>
-          <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1 shrink-0">
+            {/* Firlaw: brand logo replaces the left margin that used to be here */}
             <div class={web() ? "hidden xl:flex shrink-0 items-center ml-14 mr-2" : "hidden xl:flex shrink-0 items-center ml-2 mr-2"}>
               <FirlawLogo height={32} />
             </div>
@@ -229,12 +230,12 @@ export function Titlebar() {
             >
               <Button
                 variant="ghost"
-                class="group/sidebar-toggle titlebar-icon w-10 h-10 p-0 box-border rounded-[10px]"
+                class="group/sidebar-toggle titlebar-icon w-8 h-6 p-0 box-border"
                 onClick={layout.sidebar.toggle}
                 aria-label={language.t("command.sidebar.toggle")}
                 aria-expanded={layout.sidebar.opened()}
               >
-                <Icon size="medium" name={layout.sidebar.opened() ? "sidebar-active" : "sidebar"} />
+                <Icon size="small" name={layout.sidebar.opened() ? "sidebar-active" : "sidebar"} />
               </Button>
             </TooltipKeybind>
             <div class="hidden xl:flex items-center shrink-0">
@@ -259,7 +260,7 @@ export function Titlebar() {
                       <Button
                         variant="ghost"
                         icon={creating() ? "new-session-active" : "new-session"}
-                        class="titlebar-icon w-10 h-10 p-0 box-border rounded-[10px]"
+                        class="titlebar-icon w-8 h-6 p-0 box-border"
                         disabled={layout.sidebar.opened()}
                         tabIndex={layout.sidebar.opened() ? -1 : undefined}
                         onClick={() => {
@@ -287,7 +288,7 @@ export function Titlebar() {
                       <Button
                         variant="ghost"
                         icon="chevron-left"
-                        class="titlebar-icon w-10 h-10 p-0 box-border rounded-[10px]"
+                        class="titlebar-icon w-6 h-6 p-0 box-border"
                         disabled={!canBack()}
                         onClick={back}
                         aria-label={language.t("common.goBack")}
@@ -297,7 +298,7 @@ export function Titlebar() {
                       <Button
                         variant="ghost"
                         icon="chevron-right"
-                        class="titlebar-icon w-10 h-10 p-0 box-border rounded-[10px]"
+                        class="titlebar-icon w-6 h-6 p-0 box-border"
                         disabled={!canForward()}
                         onClick={forward}
                         aria-label={language.t("common.goForward")}
@@ -328,7 +329,7 @@ export function Titlebar() {
           data-tauri-drag-region
           onMouseDown={drag}
         >
-          <div id="opencode-titlebar-right" class="flex items-center gap-2 shrink-0 justify-end" />
+          <div id="opencode-titlebar-right" class="flex items-center gap-1 shrink-0 justify-end" />
           <Show when={windows()}>
             {!tauriApi() && <div class="shrink-0" style={{ width: windowsControlsWidth() }} />}
             <div data-tauri-decorum-tb class="flex flex-row" />
