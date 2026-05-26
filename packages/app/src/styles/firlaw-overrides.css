@@ -10,7 +10,6 @@
   --firlaw-titlebar-height: 3.5rem;     /* 56px — upstream default is 2.5rem (40px) */
   --firlaw-titlebar-btn-size: 2.5rem;   /* 40px (10 in Tailwind) */
   --firlaw-titlebar-btn-radius: 10px;
-  --firlaw-titlebar-icon-size: 1.25rem; /* medium icon — upstream uses small (1rem) */
 }
 
 /* Override header height */
@@ -25,11 +24,6 @@ header[data-tauri-drag-region] {
   border-radius: var(--firlaw-titlebar-btn-radius);
 }
 
-/* Upgrade icon size inside titlebar buttons */
-.titlebar-icon [data-component="icon"] {
-  width: var(--firlaw-titlebar-icon-size);
-  height: var(--firlaw-titlebar-icon-size);
-}
 
 /* ─── Session Header ────────────────────────────────────────────────────────── */
 

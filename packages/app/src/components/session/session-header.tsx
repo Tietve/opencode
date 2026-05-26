@@ -260,6 +260,7 @@ export function SessionHeader() {
                 <IconButton
                   icon="reload"
                   variant="ghost"
+                  size="large"
                   class="firlaw-reload-skills-btn"
                   onClick={reloadSkills}
                   disabled={reloading()}
@@ -369,7 +370,7 @@ export function SessionHeader() {
                       aria-expanded={view().reviewPanel.opened()}
                       aria-controls="review-panel"
                     >
-                      <Icon size="small" name={view().reviewPanel.opened() ? "review-active" : "review"} />
+                      <Icon size="medium" name={view().reviewPanel.opened() ? "review-active" : "review"} />
                       {/* Firlaw: show review label */}
                       <span class="firlaw-btn-label">Review</span>
                     </Button>
@@ -388,9 +389,9 @@ export function SessionHeader() {
                         aria-expanded={layout.fileTree.opened()}
                         aria-controls="file-tree-panel"
                       >
-                        <div class="relative flex items-center justify-center size-4">
+                        <div class="relative flex items-center justify-center size-5">
                           <Icon
-                            size="small"
+                            size="medium"
                             name={layout.fileTree.opened() ? "file-tree-active" : "file-tree"}
                             classList={{
                               "text-icon-strong": layout.fileTree.opened(),
