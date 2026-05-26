@@ -13,6 +13,7 @@ import { useCommand } from "@/context/command"
 import { useLanguage } from "@/context/language"
 import { useSettings } from "@/context/settings"
 import { applyPath, backPath, forwardPath } from "./titlebar-history"
+import { FirlawLogo } from "./firlaw-logo"
 
 type TauriDesktopWindow = {
   startDragging?: () => Promise<void>
@@ -217,8 +218,12 @@ export function Titlebar() {
             </div>
           </Show>
           <div class="flex items-center gap-1 shrink-0">
+            {/* Firlaw: brand logo replaces the left margin that used to be here */}
+            <div class={web() ? "hidden xl:flex shrink-0 items-center ml-14 mr-2" : "hidden xl:flex shrink-0 items-center ml-2 mr-2"}>
+              <FirlawLogo height={32} />
+            </div>
             <TooltipKeybind
-              class={web() ? "hidden xl:flex shrink-0 ml-14" : "hidden xl:flex shrink-0 ml-2"}
+              class="hidden xl:flex shrink-0"
               placement="bottom"
               title={language.t("command.sidebar.toggle")}
               keybind={command.keybind("sidebar.toggle")}

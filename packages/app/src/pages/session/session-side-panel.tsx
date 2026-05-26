@@ -13,7 +13,7 @@ import { ConstrainDragYAxis, getDraggableId } from "@/utils/solid-dnd"
 import { useDialog } from "@opencode-ai/ui/context/dialog"
 
 import FileTree from "@/components/file-tree"
-import { showToast } from "@opencode-ai/ui/toast"
+import { FirlawSidePanelActions } from "./firlaw-side-panel-actions"
 import { SessionContextUsage } from "@/components/session-context-usage"
 import { SessionContextTab, SortableTab, FileVisual } from "@/components/session"
 import { useCommand } from "@/context/command"
@@ -119,44 +119,6 @@ export function SessionSidePanel(props: {
     if (!state?.loaded) return false
     return file.tree.children("").length === 0
   })
-
-  function errorMessageOf(error: unknown, fallback: string): string {
-    if (error instanceof Error && error.message) return error.message
-    if (typeof error === "string" && error) return error
-    return fallback
-  }
-
-  async function uploadAtRoot(): Promise<void> {
-    const input = document.createElement("input")
-    input.type = "file"
-    input.multiple = true
-    input.onchange = async () => {
-      const files = input.files
-      if (!files || files.length === 0) return
-      try {
-        for (const item of Array.from(files)) {
-          await file.firlawFiles.upload("/", item)
-        }
-        await file.tree.refresh("")
-        showToast({ variant: "success", title: "Đã upload" })
-      } catch (e) {
-        showToast({ variant: "error", title: errorMessageOf(e, "Upload thất bại") })
-      }
-    }
-    input.click()
-  }
-
-  async function mkdirAtRoot(): Promise<void> {
-    const name = window.prompt("Tên folder mới:")
-    if (!name) return
-    try {
-      await file.firlawFiles.mkdir(`/${name}`)
-      await file.tree.refresh("")
-      showToast({ variant: "success", title: "Đã tạo folder" })
-    } catch (e) {
-      showToast({ variant: "error", title: errorMessageOf(e, "Tạo folder thất bại") })
-    }
-  }
 
   const normalizeTab = (tab: string) => {
     if (!tab.startsWith("file://")) return tab
@@ -436,24 +398,7 @@ export function SessionSidePanel(props: {
                       </Tabs.Trigger>
                     </Tabs.List>
                     <Show when={fileTreeTab() === "all"}>
-                      <button
-                        type="button"
-                        title="Upload file"
-                        aria-label="Upload file"
-                        class="px-2 py-1 text-14-medium text-text-base hover:bg-surface-base-hover rounded shrink-0"
-                        onClick={() => void uploadAtRoot()}
-                      >
-                        ⬆
-                      </button>
-                      <button
-                        type="button"
-                        title="Tạo folder mới"
-                        aria-label="Tạo folder mới"
-                        class="px-2 py-1 text-14-medium text-text-base hover:bg-surface-base-hover rounded shrink-0"
-                        onClick={() => void mkdirAtRoot()}
-                      >
-                        +
-                      </button>
+                      <FirlawSidePanelActions />
                     </Show>
                   </div>
                   <Tabs.Content value="changes" class="bg-background-stronger px-3 py-0">

@@ -260,7 +260,8 @@ export function SessionHeader() {
                 <IconButton
                   icon="reload"
                   variant="ghost"
-                  size="small"
+                  size="large"
+                  class="firlaw-reload-skills-btn"
                   onClick={reloadSkills}
                   disabled={reloading()}
                   aria-label="Nạp lại skills"
@@ -270,7 +271,7 @@ export function SessionHeader() {
                 <div class="hidden xl:flex items-center">
                   <Show when={canOpen()}>
                     <div class="flex items-center">
-                      <div class="flex h-[24px] box-border items-center rounded-md border border-border-weak-base bg-surface-panel overflow-hidden">
+                      <div class="flex h-[24px] box-border items-center rounded-md border border-border-weak-base bg-surface-panel overflow-hidden firlaw-open-dir-btn">
                         <Button
                           variant="ghost"
                           class="rounded-none h-full px-0.5 border-none shadow-none disabled:!cursor-default"
@@ -286,6 +287,8 @@ export function SessionHeader() {
                               <Spinner class="size-3.5" style={{ color: tint() ?? "var(--icon-base)" }} />
                             </Show>
                           </div>
+                          {/* Firlaw: show folder label */}
+                          <span class="firlaw-dir-label">Thư mục</span>
                         </Button>
                         <DropdownMenu
                           gutter={4}
@@ -361,13 +364,15 @@ export function SessionHeader() {
                   >
                     <Button
                       variant="ghost"
-                      class="group/review-toggle titlebar-icon w-8 h-6 p-0 box-border"
+                      class="group/review-toggle titlebar-icon w-8 h-6 p-0 box-border firlaw-header-action-btn"
                       onClick={() => view().reviewPanel.toggle()}
                       aria-label={language.t("command.review.toggle")}
                       aria-expanded={view().reviewPanel.opened()}
                       aria-controls="review-panel"
                     >
-                      <Icon size="small" name={view().reviewPanel.opened() ? "review-active" : "review"} />
+                      <Icon size="medium" name={view().reviewPanel.opened() ? "review-active" : "review"} />
+                      {/* Firlaw: show review label */}
+                      <span class="firlaw-btn-label">Review</span>
                     </Button>
                   </TooltipKeybind>
 
@@ -378,15 +383,15 @@ export function SessionHeader() {
                     >
                       <Button
                         variant="ghost"
-                        class="titlebar-icon w-8 h-6 p-0 box-border"
+                        class="titlebar-icon w-8 h-6 p-0 box-border firlaw-header-action-btn"
                         onClick={() => layout.fileTree.toggle()}
                         aria-label={language.t("command.fileTree.toggle")}
                         aria-expanded={layout.fileTree.opened()}
                         aria-controls="file-tree-panel"
                       >
-                        <div class="relative flex items-center justify-center size-4">
+                        <div class="relative flex items-center justify-center size-5">
                           <Icon
-                            size="small"
+                            size="medium"
                             name={layout.fileTree.opened() ? "file-tree-active" : "file-tree"}
                             classList={{
                               "text-icon-strong": layout.fileTree.opened(),
