@@ -148,13 +148,13 @@ const FileTreeNode = (
     <Dynamic
       component={local.as ?? "div"}
       classList={{
-        "w-full min-w-0 h-6 flex items-center justify-start gap-x-1.5 rounded-md px-1.5 py-0 text-left hover:bg-surface-raised-base-hover active:bg-surface-base-active transition-colors cursor-pointer": true,
+        "w-full min-w-0 h-8 flex items-center justify-start gap-x-2.5 rounded-lg px-2.5 py-0 text-left hover:bg-surface-raised-base-hover active:bg-surface-base-active transition-colors cursor-pointer": true,
         "bg-surface-base-active": local.node.path === local.active,
         ...local.classList,
         [local.class ?? ""]: !!local.class,
         [local.nodeClass ?? ""]: !!local.nodeClass,
       }}
-      style={`padding-left: ${Math.max(0, 8 + local.level * 12 - (local.node.type === "file" ? 24 : 4))}px`}
+      style={`padding-left: ${Math.max(0, 10 + local.level * 14 - (local.node.type === "file" ? 24 : 4))}px`}
       draggable={local.draggable}
       onDragStart={(event: DragEvent) => {
         if (!local.draggable) return
@@ -168,7 +168,7 @@ const FileTreeNode = (
       {local.children}
       <span
         classList={{
-          "flex-1 min-w-0 text-12-medium whitespace-nowrap truncate": true,
+          "flex-1 min-w-0 text-14-medium whitespace-nowrap truncate": true,
           "text-text-weaker": local.node.ignored,
           "text-text-weak": !local.node.ignored && !active(),
         }}
@@ -181,7 +181,7 @@ const FileTreeNode = (
         if (!value) return null
         if (local.node.type === "file") {
           return (
-            <span class="shrink-0 w-4 text-center text-12-medium" style={kindTextColor(value)}>
+            <span class="shrink-0 w-5 text-center text-14-medium" style={kindTextColor(value)}>
               {kindLabel(value)}
             </span>
           )
@@ -429,8 +429,8 @@ export default function FileTree(props: {
                         kinds={kinds()}
                         marks={marks()}
                       >
-                        <div class="size-4 flex items-center justify-center text-icon-weak">
-                          <Icon name={expanded() ? "chevron-down" : "chevron-right"} size="small" />
+                        <div class="size-5 flex items-center justify-center text-icon-weak">
+                          <Icon name={expanded() ? "chevron-down" : "chevron-right"} size="medium" />
                         </div>
                       </FileTreeNode>,
                     )}
@@ -438,11 +438,11 @@ export default function FileTree(props: {
                   <Collapsible.Content class="relative pt-0.5">
                     <div
                       classList={{
-                        "absolute top-0 bottom-0 w-px pointer-events-none bg-border-weak-base opacity-0 transition-opacity duration-150 ease-out motion-reduce:transition-none": true,
+                        "absolute top-0 bottom-0 w-px pointer-events-none bg-border-weak-base opacity-40 transition-opacity duration-150 ease-out motion-reduce:transition-none": true,
                         "group-hover/filetree:opacity-100": expanded() && deep() === level,
-                        "group-hover/filetree:opacity-50": !(expanded() && deep() === level),
+                        "group-hover/filetree:opacity-60": !(expanded() && deep() === level),
                       }}
-                      style={`left: ${Math.max(0, 8 + level * 12 - 4) + 8}px`}
+                      style={`left: ${Math.max(0, 10 + level * 14 - 4) + 8}px`}
                     />
                     <Show
                       when={level < MAX_DEPTH && !chain.includes(key(node.path))}
@@ -483,7 +483,7 @@ export default function FileTree(props: {
                     type="button"
                     onClick={() => props.onFileClick?.(node)}
                   >
-                    <div class="w-4 shrink-0" />
+                    <div class="w-5 shrink-0" />
                     <Switch>
                       <Match when={node.ignored}>
                         <FileIcon

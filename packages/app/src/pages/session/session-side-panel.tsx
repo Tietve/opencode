@@ -385,8 +385,12 @@ export function SessionSidePanel(props: {
                   class="h-full"
                   data-scope="filetree"
                 >
-                  <div class="flex items-center gap-1">
-                    <Tabs.List class="flex-1">
+                  <div class="flex flex-col gap-2 px-3 pt-3 pb-2">
+                    <div class="flex items-center gap-2">
+                      <span class="w-1.5 h-1.5 rounded-full bg-[#C9A961]" />
+                      <span class="text-13-medium text-text-strong">Thư mục dự án</span>
+                    </div>
+                    <Tabs.List class="w-full">
                       <Tabs.Trigger value="changes" class="flex-1" classes={{ button: "w-full" }}>
                         {props.reviewCount()}{" "}
                         {language.t(
