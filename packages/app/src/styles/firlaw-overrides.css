@@ -17,11 +17,7 @@ header[data-tauri-drag-region] {
   border-bottom: 1px solid var(--border-weak-base, rgba(0,0,0,.07));
 }
 
-.titlebar-icon {
-  width: var(--firlaw-titlebar-btn-size);
-  height: var(--firlaw-titlebar-btn-size);
-  border-radius: var(--firlaw-titlebar-btn-radius);
-}
+/* NOTE: do NOT override upstream .titlebar-icon — upstream uses h-6 (24px) for nav buttons */
 
 /* ─── Session Header (portal-injected right side) ─────────────────────────── */
 .firlaw-open-dir-btn {

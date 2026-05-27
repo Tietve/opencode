@@ -32,14 +32,17 @@ export function FirlawTitlebarExtras() {
 
   const toggleTheme = () => {
     const current = theme.colorScheme()
-    theme.setColorScheme(current === "dark" ? "light" : "dark")
+    const next = current === "dark" ? "light" : current === "light" ? "system" : "dark"
+    theme.setColorScheme(next)
   }
 
   const logout = async () => {
     try {
       await fetch("/api/v2/auth/sign-out", { method: "POST", credentials: "include" })
-      window.location.href = "/login.html"
-    } catch {}
+    } catch {
+      return
+    }
+    window.location.href = "/login.html"
   }
 
   return (
@@ -56,7 +59,7 @@ export function FirlawTitlebarExtras() {
               </button>
             </Tooltip>
 
-            <Tooltip placement="bottom" value={theme.colorScheme() === "dark" ? "Chế độ sáng" : "Chế độ tối"}>
+            <Tooltip placement="bottom" value={theme.colorScheme() === "dark" ? "Chế độ sáng" : theme.colorScheme() === "light" ? "Theo hệ thống" : "Chế độ tối"}>
               <button class="firlaw-top-btn" onClick={toggleTheme} aria-label="Đổi giao diện">
                 <Show
                   when={theme.colorScheme() === "dark"}
