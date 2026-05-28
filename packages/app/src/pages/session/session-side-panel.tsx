@@ -13,7 +13,7 @@ import { ConstrainDragYAxis, getDraggableId } from "@/utils/solid-dnd"
 import { useDialog } from "@opencode-ai/ui/context/dialog"
 
 import FileTree from "@/components/file-tree"
-import { FirlawSidePanelActions } from "./firlaw-side-panel-actions"
+import { FirlawSidePanelActions } from "@/firlaw/side-panel/side-panel-actions"
 import { SessionContextUsage } from "@/components/session-context-usage"
 import { SessionContextTab, SortableTab, FileVisual } from "@/components/session"
 import { useCommand } from "@/context/command"

@@ -19,7 +19,7 @@ import {
 } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import type { FileNode } from "@opencode-ai/sdk/v2"
-import { FirlawFileActions } from "./firlaw-file-actions"
+import { FirlawFileActions } from "@/firlaw/file-actions/file-actions"
 
 const MAX_DEPTH = 128
 
