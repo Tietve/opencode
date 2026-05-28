@@ -13,7 +13,7 @@ import { useCommand } from "@/context/command"
 import { useLanguage } from "@/context/language"
 import { useSettings } from "@/context/settings"
 import { applyPath, backPath, forwardPath } from "./titlebar-history"
-import { FirlawLogo } from "./firlaw-logo"
+import { FirlawLogo } from "@/firlaw/logo/logo"
 
 type TauriDesktopWindow = {
   startDragging?: () => Promise<void>

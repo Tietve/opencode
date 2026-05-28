@@ -1,0 +1,135 @@
+/**
+ * Firlaw UI overrides — monochrome court-luxury theme.
+ * Keep upstream JSX files clean; override visuals here.
+ */
+
+/* ─── Firlaw Monochrome Palette ───────────────────────────────────────────── */
+:root {
+  /* Bump this when forcing a new asset hash (CDN cache-bust). */
+  --firlaw-build: 260529;
+  --firlaw-titlebar-height: 48px;
+  --firlaw-titlebar-btn-size: 32px;
+  --firlaw-titlebar-btn-radius: 6px;
+  --firlaw-font: 'Times New Roman', Times, serif;
+}
+
+/* ─── Titlebar ─────────────────────────────────────────────────────────────── */
+header[data-tauri-drag-region] {
+  height: var(--firlaw-titlebar-height) !important;
+  border-bottom: 1px solid var(--border-weak-base, rgba(0,0,0,.07));
+}
+
+/* NOTE: do NOT override upstream .titlebar-icon — upstream uses h-6 (24px) for nav buttons */
+
+/* ─── Session Header (portal-injected right side) ─────────────────────────── */
+.firlaw-open-dir-btn {
+  height: var(--firlaw-titlebar-btn-size) !important;
+  border-radius: var(--firlaw-titlebar-btn-radius) !important;
+}
+
+.firlaw-dir-label {
+  display: inline;
+  font-size: 0.875rem;
+  padding-left: 0.5rem;
+}
+
+.firlaw-header-action-btn {
+  width: auto !important;
+  height: var(--firlaw-titlebar-btn-size) !important;
+  border-radius: var(--firlaw-titlebar-btn-radius) !important;
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+  gap: 0.5rem !important;
+}
+
+.firlaw-btn-label {
+  display: inline;
+  font-size: 0.875rem;
+}
+
+.firlaw-reload-skills-btn {
+  width: var(--firlaw-titlebar-btn-size) !important;
+  height: var(--firlaw-titlebar-btn-size) !important;
+  border-radius: var(--firlaw-titlebar-btn-radius) !important;
+}
+
+/* ─── Firlaw User Chip (topbar right) ─────────────────────────────────────── */
+.firlaw-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 10px 3px 4px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background .12s;
+  font-family: var(--firlaw-font);
+}
+.firlaw-user-chip:hover {
+  background: var(--surface-base-hover, rgba(0,0,0,.06));
+}
+.firlaw-user-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--text-strong, #161618);
+  color: var(--background-base, #fff);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 11.5px;
+  font-family: var(--firlaw-font);
+}
+.firlaw-user-name {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--firlaw-font);
+}
+
+/* ─── Firlaw Topbar Button ────────────────────────────────────────────────── */
+.firlaw-top-btn {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  color: var(--icon-weak, #6B6B70);
+  cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.firlaw-top-btn:hover {
+  background: var(--surface-base-hover, rgba(0,0,0,.06));
+  color: var(--text-strong, #161618);
+}
+.firlaw-top-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ─── Firlaw Case Toggle Button ───────────────────────────────────────────── */
+.firlaw-case-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 12px 0 10px;
+  margin-left: 6px;
+  border: 1px solid var(--border-base, rgba(0,0,0,.12));
+  border-radius: 7px;
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: var(--firlaw-font);
+  color: var(--text-base, #3F3F45);
+  background: transparent;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.firlaw-case-toggle:hover {
+  background: var(--surface-base-hover, rgba(0,0,0,.06));
+  color: var(--text-strong, #161618);
+}
+.firlaw-case-toggle svg {
+  width: 15px;
+  height: 15px;
+}
