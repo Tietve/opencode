@@ -5,6 +5,8 @@
 
 /* ─── Firlaw Monochrome Palette ───────────────────────────────────────────── */
 :root {
+  /* Bump this when forcing a new asset hash (CDN cache-bust). */
+  --firlaw-build: 260529;
   --firlaw-titlebar-height: 48px;
   --firlaw-titlebar-btn-size: 32px;
   --firlaw-titlebar-btn-radius: 6px;
